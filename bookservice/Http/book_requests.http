@@ -1,0 +1,41 @@
+### Login to obtain JWT token
+# @name tokenAPI
+POST http://localhost:5287/user/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "password"
+}
+
+###
+
+@jwt_token = {{tokenAPI.response.body.token}}
+
+### Get all books
+GET http://localhost:5287/books
+Authorization: Bearer {{jwt_token}}
+
+### Get a book by ID
+GET http://localhost:5287/books/50811f5f-33ad-40b4-b775-f055212bcb74
+Authorization: Bearer {{jwt_token}}
+
+### Borrow a book
+PUT http://localhost:5287/books/borrow
+Authorization: Bearer {{jwt_token}}
+Content-Type: application/json
+
+{
+  "userId": "4fb4e9a8-2d65-4313-9e36-776c4b560b7c",
+  "inventoryId": "27833b8c-e777-4efe-b79b-80fa069db17d"
+}
+
+### Return a book
+PUT http://localhost:5287/books/return
+Authorization: Bearer {{jwt_token}}
+Content-Type: application/json
+
+{
+  "userId": "4fb4e9a8-2d65-4313-9e36-776c4b560b7c",
+  "inventoryId": "27833b8c-e777-4efe-b79b-80fa069db17d"
+}

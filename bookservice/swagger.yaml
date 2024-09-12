@@ -1,0 +1,261 @@
+openapi: 3.0.1
+info:
+  title: Book Rental
+  description: SpringBoot 3.x application
+  version: v0.0.1
+servers:
+  - url: http://127.0.0.1:8080
+    description: Generated server url
+paths:
+  /books/return:
+    put:
+      tags:
+        - book-controller
+      summary: Return a book
+      description: Return a book
+      operationId: returnBook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BorrowRequest'
+        required: true
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request - Value must be a Guid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found - The book is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflict - The book can't be returned by another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /books/borrow:
+    put:
+      tags:
+        - book-controller
+      summary: Borrow a book
+      description: Borrow a book
+      operationId: borrow
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BorrowRequest'
+        required: true
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad Request - Value must be a Guid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found - The book is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflict - The book is already borrowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /user/login:
+    post:
+      tags:
+        - user-controller
+      summary: User Login
+      description: User Login
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        '200':
+          description: Successfully login
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '404':
+          description: Not found - The user is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /user/{id}:
+    get:
+      tags:
+        - user-controller
+      operationId: getUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '404':
+          description: Not found - The user is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /books:
+    get:
+      tags:
+        - book-controller
+      summary: Get all books
+      description: Returns books
+      operationId: getBooks
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookResponse'
+  /books/{id}:
+    get:
+      tags:
+        - book-controller
+      summary: Get a book by Id
+      description: Returns a book
+      operationId: getBooks_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successfully retrieved
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+        '400':
+          description: Bad Request - Value must be a Guid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found - The book is not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    BorrowRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        inventoryId:
+          type: string
+          format: uuid
+    ErrorResponse:
+      required:
+        - errors
+      type: object
+      properties:
+        errors:
+          type: array
+          example:
+            - Not found
+          items:
+            type: string
+            example: '["Not found"]'
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    BookResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        author:
+          type: string
+        image:
+          type: string
+    InventoryResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        loanDate:
+          type: string
+          format: date-time
+        book:
+          $ref: '#/components/schemas/BookResponse'
+        user:
+          $ref: '#/components/schemas/UserResponse'
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        role:
+          type: string
+        inventories:
+          type: array
+          items:
+            $ref: '#/components/schemas/InventoryResponse'
