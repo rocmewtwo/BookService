@@ -1,0 +1,25 @@
+/* src/components/BookDetail.css */
+.container {
+  display: flex;
+  align-items: flex-start;
+}
+
+.book-info {
+  flex: 1;
+  max-width: 30%;
+}
+
+.book-inventory {
+  flex: 2;
+  max-width: 70%;
+}
+
+.book-inventory table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.book-inventory tbody tr, .book-inventory td {
+  border-top: 1px solid #ddd;
+  padding: 8px;
+}

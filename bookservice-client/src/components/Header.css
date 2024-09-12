@@ -1,0 +1,25 @@
+/* src/components/Header.css */
+.app-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #282c34;
+    color: white;
+    text-align: center;
+    z-index: 1000; /* Ensure the header is above other elements */
+}
+
+.app-header .brand {
+    float: left;
+    padding: 0 1rem;
+}
+
+.app-header .user {
+    float: right;
+    padding: 0 1rem;
+}
+
+.app-header .brand,
+.app-header .user {
+    display: inline-block;
+}
