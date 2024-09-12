@@ -1,4 +1,4 @@
-using BookBorrowService.Models;
+using bookservice.Models;
 
 public class BookDto
 {

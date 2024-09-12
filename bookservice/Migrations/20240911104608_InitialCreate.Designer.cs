@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace BookBorrowService.Migrations
+namespace bookservice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20240911104608_InitialCreate")]

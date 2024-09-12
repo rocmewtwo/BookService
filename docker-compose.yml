@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  bookservice:
+    container_name: bookservice
+    build:
+      context: .
+      dockerfile: bookservice/DockerFile
+    ports:
+      - "5287:5287"
+    depends_on:
+      - postgres
+
+  bookservice-client:
+    container_name: bookservice-client
+    build:
+      context: .
+      dockerfile: bookservice-client/DockerFile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - bookservice
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: books
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d

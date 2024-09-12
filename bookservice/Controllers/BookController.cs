@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using BookBorrowService.Models;
+using bookservice.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

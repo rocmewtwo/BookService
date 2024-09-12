@@ -1,4 +1,4 @@
-namespace BookBorrowService.Models
+namespace bookservice.Models
 {
     public class UserResponseDto
     {

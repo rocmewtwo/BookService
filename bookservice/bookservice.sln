@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookBorrowService", "BookBorrowService.csproj", "{87DFA3E7-76F0-49A7-A32D-2205FF67B863}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bookservice", "bookservice.csproj", "{87DFA3E7-76F0-49A7-A32D-2205FF67B863}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

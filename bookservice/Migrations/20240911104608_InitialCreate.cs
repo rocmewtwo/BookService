@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace BookBorrowService.Migrations
+namespace bookservice.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

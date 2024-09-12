@@ -1,13 +1,18 @@
-# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
-COPY . .
+WORKDIR /source
+COPY bookservice/ ./bookservice/
+WORKDIR /source/bookservice
 RUN dotnet restore
-RUN dotnet build -c Release
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish -c release -o /app --no-restore
 
-# Stage 2: Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+# runs it using aspnet runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-COPY --from=build /app/publish .
+COPY --from=build /app ./
+
+# Set the environment variable to listen on port 5287
+ENV ASPNETCORE_URLS=http://+:5287
+
+# Expose port 5287
+EXPOSE 5287
 ENTRYPOINT ["dotnet", "bookservice.dll"]
