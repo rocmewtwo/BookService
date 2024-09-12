@@ -14,12 +14,29 @@
     padding: 0 1rem;
 }
 
-.app-header .user {
+.user-container {
     float: right;
+    position: relative;
     padding: 0 1rem;
 }
 
-.app-header .brand,
-.app-header .user {
-    display: inline-block;
+.popover {
+    position: absolute;
+    top: calc(100% - 10px); /* Position below the username with some spacing */
+    transform: translateX(-50%);
+    width: 100px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: black;
+    z-index: 1000;
+    text-align: center; /* Center align text inside the popover */
+}
+
+.popover-header {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.popover-body {
+    font-size: 0.9rem;
 }

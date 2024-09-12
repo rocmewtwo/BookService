@@ -1,15 +1,19 @@
 // src/components/BookDetail.js
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import Modal from 'react-modal';
 import config from '../config';
 import { getToken } from '../utils/auth';
-import './BookDetail.css'; // Import the CSS file
+import './BookDetail.css';
 
 const BookDetail = ({ username }) => {
   const { id } = useParams();
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedInventoryId, setSelectedInventoryId] = useState(null);
+  const [actionType, setActionType] = useState('');
 
   useEffect(() => {
     const token = getToken(); // Retrieve the JWT token
@@ -36,7 +40,19 @@ const BookDetail = ({ username }) => {
     fetchBook();
   }, []);
 
-  const handleReturn = async (inventoryId) => {
+  const openModal = (inventoryId, action) => {
+    setSelectedInventoryId(inventoryId);
+    setActionType(action);
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setSelectedInventoryId(null);
+    setActionType('');
+  };
+
+  const handleReturn = async () => {
     const token = getToken(); // Retrieve the JWT token
 
     try {
@@ -45,7 +61,7 @@ const BookDetail = ({ username }) => {
           'Authorization': `Bearer ${token}`, // Attach the JWT token
           'Content-Type': 'application/json', // Specify the content type
         },
-        body: JSON.stringify({ "inventoryId": inventoryId }),
+        body: JSON.stringify({ "inventoryId": selectedInventoryId }),
         method: 'PUT',
       });
 
@@ -61,15 +77,17 @@ const BookDetail = ({ username }) => {
 
       // Refresh the inventories data
       const updatedInventories = book.inventories.map((inventory) =>
-        inventory.id === inventoryId ? { ...inventory, user: null, loanDate: null } : inventory
+        inventory.id === selectedInventoryId ? { ...inventory, user: null, loanDate: null } : inventory
       );
       setBook({ ...book, inventories: updatedInventories });
     } catch (error) {
       console.error('There was a problem with the return request:', error);
+    } finally {
+      closeModal();
     }
   };
 
-  const handleLoan = async (inventoryId) => {
+  const handleLoan = async () => {
     const token = getToken(); // Retrieve the JWT token
 
     try {
@@ -78,7 +96,7 @@ const BookDetail = ({ username }) => {
           'Authorization': `Bearer ${token}`, // Attach the JWT token
           'Content-Type': 'application/json', // Specify the content type
         },
-        body: JSON.stringify({ "inventoryId": inventoryId }),
+        body: JSON.stringify({ "inventoryId": selectedInventoryId }),
         method: 'PUT',
       });
 
@@ -94,11 +112,13 @@ const BookDetail = ({ username }) => {
 
       // Refresh the inventories data
       const updatedInventories = book.inventories.map((inventory) =>
-        inventory.id === inventoryId ? { ...inventory, user: username, loanDate: new Date().getFullYear() + '/' + (new Date().getMonth() + 1) } : inventory
+        inventory.id === selectedInventoryId ? { ...inventory, user: username, loanDate: new Date().getFullYear() + '/' + (new Date().getMonth() + 1) } : inventory
       );
       setBook({ ...book, inventories: updatedInventories });
     } catch (error) {
       console.error('There was a problem with the loan request:', error);
+    } finally {
+      closeModal();
     }
   };
 
@@ -136,9 +156,9 @@ const BookDetail = ({ username }) => {
                 <td>{inventory.loanDate ? new Date(inventory.loanDate).getFullYear() + '/' + (new Date(inventory.loanDate).getMonth() + 1) : "" }</td>
                 <td>
                   {!inventory.user ? (
-                    <button onClick={() => handleLoan(inventory.id)}>Loan</button>
+                    <button onClick={() => openModal(inventory.id, 'loan')}>Loan</button>
                   ) : (
-                    inventory.user == username ? <button onClick={() => handleReturn(inventory.id)}>Return</button> : ""
+                    inventory.user == username ? <button onClick={() => openModal(inventory.id, 'return')}>Return</button> : ""
                   )}
                 </td>
               </tr>
@@ -146,6 +166,21 @@ const BookDetail = ({ username }) => {
           </tbody>
         </table>
       </div>
+
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Confirm Action"
+      >
+        <h2>Action</h2>
+        {selectedInventoryId && (
+          <div>
+            <p>Would you like to {actionType} this book?</p>
+            <button onClick={closeModal}>Cancel</button>
+            <button onClick={actionType === 'loan' ? handleLoan : handleReturn}>Confirm</button>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };

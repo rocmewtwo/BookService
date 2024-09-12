@@ -2,7 +2,7 @@
 // Retrieve the token from localStorage
 export const getToken = () => {
   const token = localStorage.getItem('token') || '';
-  if (isTokenExpired(token)) {
+  if (token && isTokenExpired(token)) {
     localStorage.removeItem('token');
     return '';
   }

@@ -45,13 +45,21 @@ public class UserController(ApplicationDbContext context, IConfiguration configu
         return Ok(new { Token = tokenString });
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<UserResponseDto>> GetUser(Guid id)
+    [HttpGet]
+    public async Task<ActionResult<UserResponseDto>> GetUser()
     {
+        // Get the user ID from the JWT token
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId == null)
+        {
+            return Unauthorized();
+        }
+
         var user = await _context.AppUsers
             .Include(u => u.Inventories!)
             .ThenInclude(i => i.Book)
-            .FirstOrDefaultAsync(u => u.Id == id);
+            .FirstOrDefaultAsync(u => u.Id == Guid.Parse(userId));
 
         if (user == null)
         {
@@ -66,7 +74,6 @@ public class UserController(ApplicationDbContext context, IConfiguration configu
             Inventories = user.Inventories != null ? user.Inventories.Select(i => new InventoryDto
             {
                 Id = i.Id,
-                LoanDate = i.LoanDate,
                 Book = new BookDto
                 {
                     Id = i.Book.Id,
@@ -74,7 +81,6 @@ public class UserController(ApplicationDbContext context, IConfiguration configu
                     Author = i.Book.Author,
                     Image = i.Book.Image
                 },
-                User = user.Username
             }).ToList() : []
         };
 

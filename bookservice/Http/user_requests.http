@@ -12,11 +12,6 @@ Content-Type: application/json
 
 @jwt_token = {{tokenAPI.response.body.token}}
 
-### Get user with id
-GET http://localhost:5287/user/4fb4e9a8-2d65-4313-9e36-776c4b560b7c
-Authorization: Bearer {{jwt_token}}
-
-
-### Get user with non-existing id
-GET http://localhost:5287/user/4fb4e9a8-2d65-4313-9e36-776c4b560b7b
+### Get user
+GET http://localhost:5287/user/
 Authorization: Bearer {{jwt_token}}

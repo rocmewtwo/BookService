@@ -5,7 +5,8 @@ import Login from './components/Login';
 import Books from './components/Books';
 import AuthWrapper from './components/AuthWrapper';
 import Header from './components/Header';
-import BookDetail from './components/BookDetail'; // Import the BookDetail component
+import BookDetail from './components/BookDetail';
+import UserProfile from './components/UserProfile';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -29,6 +30,7 @@ function App() {
                   <Route path="/" element={<Books />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/books/:id" element={<BookDetail username={username} />} />
+                  <Route path="/profile" element={<UserProfile />} />
               </Routes>
             </AuthWrapper>
         </div>
