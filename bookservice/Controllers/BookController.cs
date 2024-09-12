@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using BookBorrowService.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -54,18 +55,26 @@ public class BooksController(ApplicationDbContext context) : ControllerBase
     }
 
     [HttpPut("return")]
-    public async Task<IActionResult> ReturnBook(UserInventoryDto userInventoryDto)
+    public async Task<IActionResult> ReturnBook(BookBorrowReturnRequest request)
     {
+        // Get the user ID from the JWT token
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId == null)
+        {
+            return Unauthorized();
+        }
+
         var inventory = await _context.Inventories
             .Include(i => i.Book)
-            .FirstOrDefaultAsync(i => i.Id == userInventoryDto.InventoryId);
+            .FirstOrDefaultAsync(i => i.Id == request.InventoryId);
 
         if (inventory == null)
         {
             return NotFound();
         }
 
-        if (inventory.UserId != userInventoryDto.UserId)
+        if (inventory.UserId.ToString() != userId)
         {
             return Conflict();
         }
@@ -78,11 +87,19 @@ public class BooksController(ApplicationDbContext context) : ControllerBase
     }
 
     [HttpPut("borrow")]
-    public async Task<IActionResult> BorrowBook(UserInventoryDto userInventoryDto)
+    public async Task<IActionResult> BorrowBook(BookBorrowReturnRequest request)
     {
+        // Get the user ID from the JWT token
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId == null)
+        {
+            return Unauthorized();
+        }
+
         var inventory = await _context.Inventories
             .Include(i => i.Book)
-            .FirstOrDefaultAsync(i => i.Id == userInventoryDto.InventoryId);
+            .FirstOrDefaultAsync(i => i.Id == request.InventoryId);
 
         if (inventory == null)
         {
@@ -94,7 +111,7 @@ public class BooksController(ApplicationDbContext context) : ControllerBase
             return Conflict();
         }
 
-        inventory.UserId = userInventoryDto.UserId;
+        inventory.UserId = new Guid(userId);
         inventory.LoanDate = DateTime.UtcNow;
         await _context.SaveChangesAsync();
 

@@ -26,7 +26,6 @@ Authorization: Bearer {{jwt_token}}
 Content-Type: application/json
 
 {
-  "userId": "4fb4e9a8-2d65-4313-9e36-776c4b560b7c",
   "inventoryId": "27833b8c-e777-4efe-b79b-80fa069db17d"
 }
 
@@ -36,6 +35,5 @@ Authorization: Bearer {{jwt_token}}
 Content-Type: application/json
 
 {
-  "userId": "4fb4e9a8-2d65-4313-9e36-776c4b560b7c",
   "inventoryId": "27833b8c-e777-4efe-b79b-80fa069db17d"
 }
